@@ -42,7 +42,7 @@
 /// ## License
 ///
 /// This library is licensed under the MIT License.
-library numeral;
+library;
 
 export 'src/numeral.dart';
 export 'src/numeral_unit.dart';
