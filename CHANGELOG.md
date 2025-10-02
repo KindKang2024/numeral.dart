@@ -1,3 +1,7 @@
+## 3.1.2
+
+- Handle infinite and NaN values in toStringAsFixedNotRound
+
 ## 3.1.1
 
 - Fixed the issue that the number after the decimal point was incorrect due to inappropriate rounding.
