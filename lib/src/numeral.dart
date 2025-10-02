@@ -73,6 +73,9 @@ extension<T extends num> on T {
   }
 
   String toStringAsFixedNotRound(int fractionDigits) {
+    if (isInfinite) return '∞';
+    if (isNaN) return 'NaN';
+
     int integerValue = toInt();
     String integerPart = integerValue.toString();
     if (fractionDigits == 0) return integerPart;
