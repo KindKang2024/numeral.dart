@@ -1,3 +1,4 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:numeral/numeral.dart';
 import 'package:test/test.dart';
 
@@ -206,5 +207,29 @@ void main() {
     Numeral.builder = (unit) => '${unit.value}!!!';
     expect(1000.beautiful, '1K!!!');
     Numeral.builder = Numeral.defaultBuilder; // Reset to default
+  });
+
+  group('BigInt and IntX', () {
+    test('Int64', () {
+      expect(Int64(1000).numeral(), '1K');
+      expect(Int64(123456).numeral(digits: 2, rounded: false), '123.45K');
+      expect(Int64(123456).numeral(digits: 2, rounded: true), '123.46K');
+      expect(Int64(123456789123).numeral(digits: 3, rounded: false), '123.456B');
+    });
+
+    test('Int32', () {
+      expect(Int32(1000).numeral(), '1K');
+      expect(Int32(123456).numeral(digits: 2, rounded: false), '123.45K');
+      expect(Int32(123456).numeral(digits: 2, rounded: true), '123.46K');
+    });
+
+    test('BigInt', () {
+      expect(BigInt.from(1000).numeral(), '1K');
+      expect(BigInt.from(123456).numeral(digits: 2, rounded: false), '123.45K');
+      expect(BigInt.from(123456).numeral(digits: 2, rounded: true), '123.46K');
+      expect(BigInt.from(123456789123).numeral(digits: 3, rounded: false), '123.456B');
+      final bigT = BigInt.parse('123456789123456789');
+      expect(bigT.numeral(digits: 3), '123456.789T');
+    });
   });
 }

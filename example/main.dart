@@ -1,3 +1,4 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:numeral/numeral.dart';
 
 void main() {
@@ -21,4 +22,14 @@ void main() {
 
   Numeral.digits = 1;
   print(12345.beautiful); // 12.3K
+  Numeral.digits = 3; // reset
+
+  print('\nInt64:');
+  print(Int64(1000).beautiful);
+  print(Int64(123456).numeral(digits: 2, rounded: true));
+
+  print('\nBigInt:');
+  print(BigInt.from(1000).beautiful);
+  final bigT = BigInt.parse('123456789123456789');
+  print(bigT.numeral(digits: 3));
 }

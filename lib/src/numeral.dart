@@ -1,3 +1,5 @@
+import 'package:fixnum/fixnum.dart';
+
 import 'numeral_unit.dart';
 
 extension Numeral<T extends num> on T {
@@ -103,6 +105,116 @@ extension<T extends num> on T {
           decimalPart.padRight(fractionDigits - decimalPart.length, '0');
     }
     return '$integerPart.$decimalPart';
+  }
+}
+
+
+extension NumeralOnBigInt on BigInt {
+  /// Parsing [BigInt] to formated [String].
+  ///
+  /// ```dart
+  /// BigInt.from(1050).numeral(digits: 1, rounded: true); // -> 1.1K;
+  /// ```
+  String numeral(
+      {int? digits, bool? rounded, String Function(NumeralUnit)? builder}) {
+    final (value, unit) = toNumeral;
+    final numValue = value.toDouble();
+    rounded ??= Numeral.rounded;
+    digits ??= Numeral.digits;
+    final cleaned = (rounded
+        ? numValue.toStringAsFixed(digits)
+        : numValue.toStringAsFixedNotRound(digits))
+        .cleaned;
+    final suffix = builder.orDefault(unit);
+
+    return '$cleaned$suffix';
+  }
+
+  /// The getter [beautiful] is an alias for [numeral] with default [digits],
+  /// [rounded] and [builder].
+  ///
+  /// ```dart
+  /// BigInt.from(1000).beautiful; // -> 1K
+  /// ```
+  String get beautiful => numeral();
+
+  (num, NumeralUnit) get toNumeral {
+    final double value;
+    final NumeralUnit unit;
+
+    if (this >= BigInt.from(1000000000000)) {
+      value = (this / BigInt.from(1000000000000)).toDouble();
+      unit = NumeralUnit.trillion;
+    } else if (this >= BigInt.from(1000000000)) {
+      value = (this / BigInt.from(1000000000)).toDouble();
+      unit = NumeralUnit.billion;
+    } else if (this >= BigInt.from(1000000)) {
+      value = (this / BigInt.from(1000000)).toDouble();
+      unit = NumeralUnit.million;
+    } else if (this >= BigInt.from(1000)) {
+      value = (this / BigInt.from(1000)).toDouble();
+      unit = NumeralUnit.thousand;
+    } else {
+      value = toDouble();
+      unit = NumeralUnit.less;
+    }
+
+    return (value, unit);
+  }
+}
+
+extension NumeralOnIntX on IntX {
+  /// Parsing [IntX] to formated [String].
+  ///
+  /// ```dart
+  /// Int64(1050).numeral(digits: 1, rounded: true); // -> 1.1K;
+  /// Int32(1050).numeral(digits: 1, rounded: true); // -> 1.1K;
+  /// ```
+  String numeral(
+      {int? digits, bool? rounded, String Function(NumeralUnit)? builder}) {
+    final (value, unit) = toNumeral;
+    final numValue = value.toDouble();
+    rounded ??= Numeral.rounded;
+    digits ??= Numeral.digits;
+    final cleaned = (rounded
+        ? numValue.toStringAsFixed(digits)
+        : numValue.toStringAsFixedNotRound(digits))
+        .cleaned;
+    final suffix = builder.orDefault(unit);
+
+    return '$cleaned$suffix';
+  }
+
+  /// The getter [beautiful] is an alias for [numeral] with default [digits],
+  /// [rounded] and [builder].
+  ///
+  /// ```dart
+  /// Int64(1000).beautiful; // -> 1K
+  /// ```
+  String get beautiful => numeral();
+
+  (num, NumeralUnit) get toNumeral {
+    final double value;
+    final NumeralUnit unit;
+
+    if (this >= Int64(1000000000000)) {
+      value = toDouble() / 1000000000000;
+      unit = NumeralUnit.trillion;
+    } else if (this >= Int64(1000000000)) {
+      value = toDouble() / 1000000000;
+      unit = NumeralUnit.billion;
+    } else if (this >= Int64(1000000)) {
+      value = toDouble() / 1000000;
+      unit = NumeralUnit.million;
+    } else if (this >= Int64(1000)) {
+      value = toDouble() / 1000;
+      unit = NumeralUnit.thousand;
+    } else {
+      value = toDouble();
+      unit = NumeralUnit.less;
+    }
+
+    return (value, unit);
   }
 }
 
